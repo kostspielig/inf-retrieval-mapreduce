@@ -16,7 +16,10 @@ public class NgramsReducer extends Reducer<Text, IntWritable, Text, IntWritable>
 		for (IntWritable value : values) {
 			sum += value.get();
 		}
-		context.write(key, new IntWritable(sum));
+		
+		if (sum > 50){
+			context.write(key, new IntWritable(sum));
+		}
 		
 	}
 
