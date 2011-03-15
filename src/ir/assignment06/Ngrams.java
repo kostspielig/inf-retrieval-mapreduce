@@ -20,15 +20,17 @@ public class Ngrams extends Configured implements Tool {
 
 	@Override
 	public int run(String[] args) throws Exception {
+		//args[0] = input path
+		//args[1] = output path
 		Configuration conf = new Configuration();
 		
-		DistributedCache.addFileToClassPath(new Path("/user/flindenberg-pc/f.lindenberg/bliki-core-3.0.16.jar"), conf);
-//		DistributedCache.addFileToClassPath(new Path("/user/fabian/bliki-core-3.0.16.jar"), conf);
+//		DistributedCache.addFileToClassPath(new Path("/user/flindenberg-pc/f.lindenberg/bliki-core-3.0.16.jar"), conf);
+		DistributedCache.addFileToClassPath(new Path("/user/fabian/bliki-core-3.0.16.jar"), conf);
 
-		Job job = new Job(conf, "Ngrams");
+		Job job = new Job(conf, "ngrams");
 		job.setJarByClass(Ngrams.class);
 
-		job.setMapperClass(NgramsMapper.class);
+		job.setMapperClass(NgramsMapper1.class);
 		job.setReducerClass(NgramsReducer.class);
 
 		job.setOutputKeyClass(Text.class);
@@ -44,7 +46,7 @@ public class Ngrams extends Configured implements Tool {
 	}
 
 	public static void main(String[] args) throws Exception {
-		args = new String[]{"data/input", "data/output"}; // TODO: delete this before running as jar 
+//		args = new String[]{"data/input", "data/output"}; // TODO: delete this before running as jar 
 		int res = ToolRunner.run(new Configuration(), new Ngrams(), args);
 		System.exit(res);
 	}
