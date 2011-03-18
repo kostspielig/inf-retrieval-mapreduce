@@ -1,12 +1,9 @@
 package ir.assignment06;
 
-import ir.assignment06.util.NGramCounter;
 import ir.assignment06.util.TextUtil;
 import ir.assignment06.util.WikiUtil;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.io.IntWritable;
@@ -21,12 +18,10 @@ public class NgramsMapper2 extends Mapper<LongWritable, Text, Text, IntWritable>
 	private static final IntWritable ONE = new IntWritable(1);
 	private static final String DELIMITER = " ";
 	private WikiUtil wikiUtil = new WikiUtil();
-	private int n=3;
 	
 	@Override
 	public void map(LongWritable key, Text value, final Context context) throws IOException, 
 		InterruptedException {
-		context.getCounter(NGramCounter.NR_INPUT_RECORDS).increment(1);
 		
 		String text = wikiUtil.getPlainTextFromWikiMarkup(value.toString()).toLowerCase();
 		text = TextUtil.dropNonAlphaNumericCharacters(text);

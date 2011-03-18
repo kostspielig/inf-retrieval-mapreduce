@@ -1,12 +1,9 @@
 package ir.assignment06;
 
-import ir.assignment06.util.NGramCounter;
 import ir.assignment06.util.TextUtil;
 import ir.assignment06.util.WikiUtil;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.io.IntWritable;
