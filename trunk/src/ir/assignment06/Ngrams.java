@@ -27,10 +27,10 @@ public class Ngrams extends Configured implements Tool {
 //		DistributedCache.addFileToClassPath(new Path("/user/flindenberg-pc/f.lindenberg/bliki-core-3.0.16.jar"), conf);
 		DistributedCache.addFileToClassPath(new Path("/user/fabian/bliki-core-3.0.16.jar"), conf);
 
-		Job job = new Job(conf, "ngrams");
+		Job job = new Job(conf, "3-grams");
 		job.setJarByClass(Ngrams.class);
 
-		job.setMapperClass(NgramsMapper1.class);
+		job.setMapperClass(NgramsMapper3.class);
 		job.setReducerClass(NgramsReducer.class);
 
 		job.setOutputKeyClass(Text.class);
