@@ -14,15 +14,20 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-
-
-public class NgramsMapper3 extends Mapper<LongWritable, Text, Text, IntWritable> {
+public class NgramsMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
 	private static final IntWritable ONE = new IntWritable(1);
 	private static final String DELIMITER = " ";
 	private WikiUtil wikiUtil = new WikiUtil();
-	private int n=2;
+	private int n;
 	
+	@Override
+	protected void setup(Context context) throws IOException,
+			InterruptedException {
+		super.setup(context);
+		this.n = context.getConfiguration().getInt("N", 1);
+	}
+
 	@Override
 	public void map(LongWritable key, Text value, final Context context) throws IOException, 
 		InterruptedException {
@@ -35,30 +40,31 @@ public class NgramsMapper3 extends Mapper<LongWritable, Text, Text, IntWritable>
 		StringTokenizer tokenizer = new StringTokenizer(text); // TODO: define delimiters
 		while (tokenizer.hasMoreTokens()) {
 			String token = tokenizer.nextToken();
-			emitNgrams(context, previousElements, token);
 			previousElements.add(token);
-			if (previousElements.size() > n) {
+			if (previousElements.size() == this.n) {
+				emitNgrams(context, previousElements);
 				previousElements.poll();
 			}
 		}
 		
 	}
 
-	private void emitNgrams(Context context, Queue<String> previousElements, String token) throws IOException, InterruptedException {
-		if (previousElements.size() >= 2){
-			Text ngram = new Text(); 
-			
-			StringBuilder prevGramBuilder = new StringBuilder();
-			
-			for (String prevElement : previousElements) {
-				prevGramBuilder.append(prevElement);
-				prevGramBuilder.append(DELIMITER);
-		}
-			prevGramBuilder.append(token);
-			ngram.set(prevGramBuilder.toString());
-			context.write(ngram, ONE);
+	private void emitNgrams(Context context, Queue<String> previousElements) throws IOException, InterruptedException {
+		Text ngram = new Text(); 
 
+		StringBuilder nGramBuilder = new StringBuilder();
+
+		int count = 0;
+		for (String prevElement : previousElements) {
+			nGramBuilder.append(prevElement);
+			count++;
+			if (count < previousElements.size()) {
+				nGramBuilder.append(DELIMITER);
+			}
 		}
+		
+		ngram.set(nGramBuilder.toString());
+		context.write(ngram, ONE);
 	}
 	
 }
